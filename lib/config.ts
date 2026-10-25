@@ -20,3 +20,7 @@ export const AUTHOR_X_URL = "";
 
 /** IndexNow key (Bing, Yandex, Seznam...). Must match public/<key>.txt. Public by design. */
 export const INDEXNOW_KEY = "09d8d68d77382dbe4ef35ddc29fd80c4";
+
+/** Google Search Console HTML-tag verification (public by design). Env var overrides it. */
+export const GOOGLE_SITE_VERIFICATION =
+  process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "co8hhQhMY7R_NTfEABxfv-I_8yT9tRULwt7Q-CzgnNY";

@@ -1,6 +1,6 @@
 import { AppShell } from "@/components/AppShell";
 import { Footer } from "@/components/Footer";
-import { SITE_NAME, SITE_URL, TAGLINE } from "@/lib/config";
+import { GOOGLE_SITE_VERIFICATION, SITE_NAME, SITE_URL, TAGLINE } from "@/lib/config";
 import { themeScript } from "@/lib/theme";
 import { Analytics } from "@vercel/analytics/next";
 import { GeistMono } from "geist/font/mono";
@@ -49,9 +49,7 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
-  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
-    : undefined,
+  verification: { google: GOOGLE_SITE_VERIFICATION },
 };
 
 export const viewport: Viewport = {
