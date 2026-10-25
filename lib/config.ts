@@ -17,3 +17,6 @@ export const TAGLINE = "AI writes your code. Can you catch its bugs?";
 /** Footer credit. Leave empty to hide; fill in to show "Made by …" and the X link. */
 export const AUTHOR_NAME = "";
 export const AUTHOR_X_URL = "";
+
+/** IndexNow key (Bing, Yandex, Seznam...). Must match public/<key>.txt. Public by design. */
+export const INDEXNOW_KEY = "09d8d68d77382dbe4ef35ddc29fd80c4";

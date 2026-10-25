@@ -93,6 +93,7 @@ The site targets developers searching for coding interview prep ("python find th
 
 1. In Vercel → Settings → Domains, add `spottheaibug.com` and `www.spottheaibug.com`, with `www` redirecting to the apex domain (the canonical URLs use the apex).
 2. Add the domain to [Google Search Console](https://search.google.com/search-console) (DNS verification, or set `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`), then submit `https://spottheaibug.com/sitemap.xml`. Do the same in Bing Webmaster Tools.
+   For Bing (and Yandex, Seznam, Naver), open `https://spottheaibug.com/api/indexnow` once after each deploy that adds pages. It submits every sitemap URL through IndexNow using the key file in `public/` (look for `"ok": true`).
 3. Check a few pages in Google's [Rich Results Test](https://search.google.com/test/rich-results).
 4. Rankings come from content and links over time: keep adding questions and share the daily puzzle where developers hang out. Every share links back to the site.
 

@@ -37,3 +37,12 @@ describe("interview questions content", () => {
     }
   });
 });
+
+describe("IndexNow key", () => {
+  it("has a matching key file in public/", async () => {
+    const { INDEXNOW_KEY } = await import("@/lib/config");
+    const { readFileSync } = await import("node:fs");
+    expect(INDEXNOW_KEY).toMatch(/^[a-f0-9]{32}$/);
+    expect(readFileSync(`public/${INDEXNOW_KEY}.txt`, "utf8").trim()).toBe(INDEXNOW_KEY);
+  });
+});
