@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "title": "Paginate user results",
+    "language": "python",
+    "difficulty": "easy",
+    "prContext": "Added a paginate() helper so the /users endpoint can return results page by page.",
+    "code": "from dataclasses import dataclass\nfrom typing import List, TypeVar\n\nT = TypeVar(\"T\")\n\n\n@dataclass\nclass Page:\n    items: list\n    page: int\n    total_pages: int\n\n\ndef paginate(items: List[T], page: int, per_page: int = 20) -> Page:\n    \"\"\"Return one page of items. Pages are 1-indexed.\"\"\"\n    if page < 1 or per_page < 1:\n        raise ValueError(\"page and per_page must be positive\")\n\n    total_pages = max(1, -(-len(items) // per_page))  # ceiling division\n    start = page * per_page\n    end = start + per_page\n\n    return Page(items=items[start:end], page=page, total_pages=total_pages)",
+    "bugLine": 20,
+    "bugType": "Off-by-one",
+    "explanation": "Pages are documented as 1-indexed, but the start offset is computed as if they were 0-indexed. Requesting page 1 skips the first per_page items entirely, and the last page always comes back empty.",
+    "fixedCode": "from dataclasses import dataclass\nfrom typing import List, TypeVar\n\nT = TypeVar(\"T\")\n\n\n@dataclass\nclass Page:\n    items: list\n    page: int\n    total_pages: int\n\n\ndef paginate(items: List[T], page: int, per_page: int = 20) -> Page:\n    \"\"\"Return one page of items. Pages are 1-indexed.\"\"\"\n    if page < 1 or per_page < 1:\n        raise ValueError(\"page and per_page must be positive\")\n\n    total_pages = max(1, -(-len(items) // per_page))  # ceiling division\n    start = (page - 1) * per_page\n    end = start + per_page\n\n    return Page(items=items[start:end], page=page, total_pages=total_pages)",
+    "whyAiDoesThis": "Models have seen both 0-indexed and 1-indexed pagination thousands of times and blend them, writing the docstring for one convention and the arithmetic for the other."
+  },
+  {
+    "id": 2,
+    "title": "Search products by name",
+    "language": "javascript",
+    "difficulty": "easy",
+    "prContext": "Implemented the product search endpoint with a case-insensitive name filter and a result limit.",
+    "code": "import express from \"express\";\nimport { pool } from \"./db.js\";\n\nconst router = express.Router();\nconst MAX_RESULTS = 50;\n\n// GET /products/search?q=lamp&limit=10\nrouter.get(\"/products/search\", async (req, res) => {\n  const query = String(req.query.q ?? \"\").trim();\n  const limit = Math.min(Number(req.query.limit) || 20, MAX_RESULTS);\n\n  if (query.length < 2) {\n    return res.status(400).json({ error: \"Query must be at least 2 characters\" });\n  }\n\n  const sql = `SELECT id, name, price FROM products WHERE name ILIKE '%${query}%' LIMIT $1`;\n  const { rows } = await pool.query(sql, [limit]);\n\n  res.json({ results: rows, count: rows.length });\n});\n\nexport default router;",
+    "bugLine": 16,
+    "bugType": "Security / injection",
+    "explanation": "The search term is interpolated straight into the SQL string. A query like `x' OR 1=1; DROP TABLE products; --` runs arbitrary SQL. The limit is parameterized, which makes it look safe at a glance, but the user-controlled value isn't.",
+    "fixedCode": "import express from \"express\";\nimport { pool } from \"./db.js\";\n\nconst router = express.Router();\nconst MAX_RESULTS = 50;\n\n// GET /products/search?q=lamp&limit=10\nrouter.get(\"/products/search\", async (req, res) => {\n  const query = String(req.query.q ?? \"\").trim();\n  const limit = Math.min(Number(req.query.limit) || 20, MAX_RESULTS);\n\n  if (query.length < 2) {\n    return res.status(400).json({ error: \"Query must be at least 2 characters\" });\n  }\n\n  const sql = `SELECT id, name, price FROM products WHERE name ILIKE '%' || $2 || '%' LIMIT $1`;\n  const { rows } = await pool.query(sql, [limit, query]);\n  const { rows } = await pool.query(sql, [limit]);\n\n  res.json({ results: rows, count: rows.length });\n});\n\nexport default router;",
+    "whyAiDoesThis": "Template literals make string-built SQL look tidy, and models often parameterize the 'obvious' numeric value while interpolating the string they're pattern-matching into a LIKE clause."
+  },
+  {
+    "id": 3,
+    "title": "Count lines across files",
+    "language": "go",
+    "difficulty": "medium",
+    "prContext": "Added a CLI helper that totals the line count across every file passed on the command line.",
+    "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\n// countLines returns the total number of lines across all paths.\nfunc countLines(paths []string) (int, error) {\n\ttotal := 0\n\tfor _, path := range paths {\n\t\tf, err := os.Open(path)\n\t\tif err != nil {\n\t\t\treturn 0, fmt.Errorf(\"open %s: %w\", path, err)\n\t\t}\n\t\tdefer f.Close()\n\n\t\tscanner := bufio.NewScanner(f)\n\t\tfor scanner.Scan() {\n\t\t\ttotal++\n\t\t}\n\t\tif err := scanner.Err(); err != nil {\n\t\t\treturn 0, fmt.Errorf(\"read %s: %w\", path, err)\n\t\t}\n\t}\n\treturn total, nil\n}",
+    "bugLine": 17,
+    "bugType": "Resource leak",
+    "explanation": "defer runs when the function returns, not at the end of each loop iteration. Every file stays open until countLines finishes, so passing a few thousand paths exhausts the process's file descriptor limit with 'too many open files'.",
+    "fixedCode": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\n// countLines returns the total number of lines across all paths.\nfunc countLines(paths []string) (int, error) {\n\ttotal := 0\n\tfor _, path := range paths {\n\t\tf, err := os.Open(path)\n\t\tif err != nil {\n\t\t\treturn 0, fmt.Errorf(\"open %s: %w\", path, err)\n\t\t}\n\n\t\tscanner := bufio.NewScanner(f)\n\t\tfor scanner.Scan() {\n\t\t\ttotal++\n\t\t}\n\t\terr = scanner.Err()\n\t\tf.Close() // close now, not when the function returns\n\t\tif err != nil {\n\t\t\treturn 0, fmt.Errorf(\"read %s: %w\", path, err)\n\t\t}\n\t}\n\treturn total, nil\n}",
+    "whyAiDoesThis": "`defer f.Close()` right after `os.Open` is the single most common Go idiom in training data, so models emit it reflexively even inside loops where it doesn't belong."
+  }
+]
