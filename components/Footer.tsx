@@ -11,7 +11,10 @@ export function Footer() {
             {AUTHOR_NAME}
           </a>
         </p>
-        <nav className="flex items-center gap-4" aria-label="Footer">
+        <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2" aria-label="Footer">
+          <Link href="/interview-questions" className="hover:text-fg">
+            Interview questions
+          </Link>
           <Link href="/how-to-play" className="hover:text-fg">
             How to play
           </Link>

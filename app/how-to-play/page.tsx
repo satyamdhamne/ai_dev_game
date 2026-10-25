@@ -6,6 +6,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "How to play",
   description: "Find the one real bug in today's AI-written pull request in 3 attempts, then name it.",
+  alternates: { canonical: "/how-to-play" },
 };
 
 export default function HowToPlayPage() {

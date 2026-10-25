@@ -72,9 +72,33 @@ Indent Go with tabs (gofmt) and everything else with spaces.
 | --- | --- | --- |
 | `NEXT_PUBLIC_WAITLIST_URL` | for the waitlist | The form POSTs here as `multipart/form-data` with `email` (and `source`) and `Accept: application/json`. Works with Formspree (`https://formspree.io/f/xxxx`) and similar. If the endpoint doesn't send CORS headers (e.g. Google Forms `.../formResponse`), it retries as an opaque `no-cors` POST. If unset, the form shows a "not configured" error. |
 | `NEXT_PUBLIC_WAITLIST_EMAIL_FIELD` | no | Field name for the email (default `email`). For Google Forms, use the `entry.123…` id. |
-| `NEXT_PUBLIC_SITE_URL` | no | Canonical URL for metadata/OG tags (default `https://spottheaibug.com`). |
+| `NEXT_PUBLIC_SITE_URL` | no | Canonical URL for metadata/OG tags, sitemap and robots (default `https://spottheaibug.com`). |
+| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | no | Google Search Console HTML-tag verification code. |
 
 `NEXT_PUBLIC_*` values are inlined at build time, so redeploy after changing them.
+
+## SEO
+
+The site targets developers searching for coding interview prep ("python find the bug interview questions", "race condition interview question", "SQL interview questions with answers"...).
+
+- **Content pages** (static, server-rendered, answers included in the HTML):
+  - `/interview-questions`: hub with FAQ
+  - `/interview-questions/{python,javascript,typescript,go,java,sql}`: 5 questions each, plus language gotchas
+  - `/interview-questions/bugs/{slug}`: 10 bug-type pages (definition, how to spot it, why AI gets it wrong, 3 questions each)
+- These 30 practice questions live in `data/interview-questions.json` and are **separate from the daily puzzles**; a test fails if one reuses a daily puzzle's bug line, so nothing spoils the game or the Pro archive.
+- **Technical SEO:** per-page titles, descriptions and canonical URLs on `https://spottheaibug.com`; `sitemap.xml`; `robots.txt`; web manifest and Apple icon; Open Graph and Twitter cards; JSON-LD (`WebSite`, `WebApplication`, `BreadcrumbList`, `CollectionPage`, `FAQPage`, `Quiz`/`Question` flashcards). `/archive` is `noindex`.
+- **Internal links:** the home page has a crawlable intro linking to every topic, the footer links the hub, and the result screen links to the practice page for that day's language.
+
+### After deploying
+
+1. In Vercel → Settings → Domains, add `spottheaibug.com` and `www.spottheaibug.com`, with `www` redirecting to the apex domain (the canonical URLs use the apex).
+2. Add the domain to [Google Search Console](https://search.google.com/search-console) (DNS verification, or set `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`), then submit `https://spottheaibug.com/sitemap.xml`. Do the same in Bing Webmaster Tools.
+3. Check a few pages in Google's [Rich Results Test](https://search.google.com/test/rich-results).
+4. Rankings come from content and links over time: keep adding questions and share the daily puzzle where developers hang out. Every share links back to the site.
+
+### Adding interview questions
+
+Add an entry to `data/interview-questions.json` (`slug`, `language`, `bugType`, `difficulty`, `title`, `prompt`, `code`, `bugLine`, `answer`, `fix`, optional `followUp`) and run `npm test`. It appears automatically on its language and bug-type pages and in the structured data. Use backticks in `answer`/`followUp` for inline code.
 
 ## Analytics
 
@@ -101,7 +125,9 @@ app/
   layout.tsx            metadata, theme script (no flash), header/footer shell, Analytics
   page.tsx              today's game (static shell + per-request puzzle)
   how-to-play/          rules page (also shown as a modal on first visit)
-  archive/              past titles, locked behind "Pro — coming soon" + waitlist
+  archive/              past titles, locked behind "Pro — coming soon" + waitlist (noindex)
+  interview-questions/  SEO hub, [language] pages, bugs/[slug] pages
+  sitemap.ts robots.ts manifest.ts apple-icon.tsx
   opengraph-image.tsx   generated OG image (next/og)
   icon.svg              favicon
 components/             Game, CodeBlock, BugTypePicker, ResultScreen, DiffView, StatsModal, …
@@ -113,7 +139,8 @@ lib/
   daily.ts highlight.ts server-side Shiki highlighting + fix diff (cached per day)
   store.ts storage.ts   localStorage-backed stores (useSyncExternalStore, hydration-safe)
   validatePuzzles.ts    shared by the CLI script and tests
-data/puzzles.json       the puzzles
+data/puzzles.json       the daily puzzles
+data/interview-questions.json  practice questions for the SEO pages
 scripts/validate-puzzles.ts
 tests/                  Vitest
 ```

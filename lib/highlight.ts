@@ -1,4 +1,5 @@
 import "server-only";
+import { cacheLife } from "next/cache";
 import { createHighlighter } from "shiki";
 import { LANGUAGES, type Language, type TokenLine } from "./types";
 
@@ -26,4 +27,11 @@ export async function highlightLines(code: string, lang: Language): Promise<Toke
       dark: t.htmlStyle?.["--shiki-dark"],
     })),
   );
+}
+
+/** Cached variant for static content pages: same input, same output, forever. */
+export async function highlightCached(code: string, lang: Language): Promise<TokenLine[]> {
+  "use cache";
+  cacheLife("max");
+  return highlightLines(code, lang);
 }

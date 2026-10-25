@@ -9,21 +9,33 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 const description =
-  "A daily game for developers. One AI-written pull request, one real bug. Find the line, name the bug, share your streak.";
+  "A free daily game for developers: find the one real bug in an AI-written pull request. Plus find-the-bug coding interview questions with answers in Python, JavaScript, TypeScript, Go, Java and SQL.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME}: ${TAGLINE}`,
+    default: `${SITE_NAME}: Daily Find-the-Bug Game & Coding Interview Practice`,
     template: `%s · ${SITE_NAME}`,
   },
   description,
   applicationName: SITE_NAME,
-  keywords: ["daily puzzle", "code review", "developer game", "AI code", "bug hunt", "wordle for developers"],
+  keywords: [
+    "coding interview questions",
+    "find the bug interview questions",
+    "debugging interview questions",
+    "code review interview questions",
+    "spot the bug",
+    "daily coding challenge",
+    "wordle for developers",
+    "AI code review",
+  ],
+  alternates: { canonical: "/" },
+  category: "technology",
   openGraph: {
     type: "website",
     url: "/",
     siteName: SITE_NAME,
+    locale: "en_US",
     title: `${SITE_NAME} 🐛`,
     description: TAGLINE,
   },
@@ -32,6 +44,14 @@ export const metadata: Metadata = {
     title: `${SITE_NAME} 🐛`,
     description: TAGLINE,
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export const viewport: Viewport = {

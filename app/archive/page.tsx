@@ -9,6 +9,9 @@ import { Suspense } from "react";
 export const metadata: Metadata = {
   title: "Archive",
   description: "Every past Spot the AI Bug puzzle. Coming soon with Pro.",
+  alternates: { canonical: "/archive" },
+  // Titles only for now: keep crawl budget on the content pages.
+  robots: { index: false, follow: true },
 };
 
 export default function ArchivePage() {

@@ -114,7 +114,7 @@ export function Game({ daily }: { daily: DailyPuzzle }) {
 
   return (
     <>
-      <main className={`mx-auto w-full max-w-2xl flex-1 px-4 pt-5 ${game?.phase === "find" ? "pb-32" : "pb-10"}`}>
+      <main className="mx-auto w-full max-w-2xl flex-1 px-4 pt-5 pb-10">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="font-mono text-xs uppercase tracking-widest text-accent">Day {day}</p>
@@ -212,7 +212,7 @@ export function Game({ daily }: { daily: DailyPuzzle }) {
       </main>
 
       {game?.phase === "find" && (
-        <div className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-bg/90 backdrop-blur supports-[backdrop-filter]:bg-bg/75">
+        <div id="submit-bar" className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-bg/90 backdrop-blur supports-[backdrop-filter]:bg-bg/75">
           <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
             <div className="flex flex-col gap-1">
               <span className="font-mono text-[10px] uppercase tracking-widest text-muted">Attempts</span>

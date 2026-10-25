@@ -5,10 +5,13 @@ import { MAX_ATTEMPTS } from "@/lib/config";
 import { formatDuration, type GameState } from "@/lib/game";
 import { buildShareText } from "@/lib/share";
 import type { DailyPuzzle, GuessResult } from "@/lib/types";
+import Link from "next/link";
 import { useState, type Ref } from "react";
 import { useShell } from "./AppShell";
 import { Countdown } from "./Countdown";
 import { DiffView } from "./DiffView";
+import { InlineCode } from "./InlineCode";
+import { LANGUAGE_LABEL } from "./interview/labels";
 import { ChartIcon, LockIcon, ShareIcon } from "./icons";
 import { WaitlistForm } from "./WaitlistForm";
 
@@ -141,6 +144,12 @@ export function ResultScreen({ daily, game, seconds, streak, ref }: Props) {
 
         <h3 className="mt-5 mb-2 font-mono text-xs uppercase tracking-widest text-muted">The fix</h3>
         <DiffView rows={daily.diff} />
+        <Link
+          href={`/interview-questions/${puzzle.language}`}
+          className="mt-4 inline-block text-sm font-semibold text-accent underline-offset-4 hover:underline"
+        >
+          Want more? Practice {LANGUAGE_LABEL[puzzle.language]} find-the-bug interview questions →
+        </Link>
       </div>
 
       <div className="relative overflow-hidden rounded-2xl border border-border bg-surface p-5 sm:p-6">
@@ -171,22 +180,5 @@ function ResultStat({ label, value }: { label: string; value: string }) {
       <dd className="font-mono text-lg font-semibold tabular-nums">{value}</dd>
       <dt className="text-[11px] uppercase tracking-wider text-muted">{label}</dt>
     </div>
-  );
-}
-
-/** Renders `backtick` spans as inline code. */
-function InlineCode({ text }: { text: string }) {
-  return (
-    <>
-      {text.split(/(`[^`]+`)/g).map((part, i) =>
-        part.startsWith("`") && part.endsWith("`") && part.length > 2 ? (
-          <code key={i} className="rounded bg-surface-2 px-1 py-0.5 font-mono text-[0.88em]">
-            {part.slice(1, -1)}
-          </code>
-        ) : (
-          part
-        ),
-      )}
-    </>
   );
 }

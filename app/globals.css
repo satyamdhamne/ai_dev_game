@@ -120,3 +120,28 @@ dialog::backdrop {
     scroll-behavior: auto !important;
   }
 }
+
+/* Static snippets: CSS-counter line numbers stay out of copied text. */
+.numbered {
+  counter-reset: line;
+}
+.numbered > .ln {
+  display: block;
+  padding-right: 1rem;
+  white-space: pre;
+}
+.numbered > .ln::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 2.5rem;
+  padding-right: 0.75rem;
+  text-align: right;
+  color: color-mix(in srgb, var(--muted) 60%, transparent);
+  user-select: none;
+}
+
+/* Keep the footer reachable above the fixed submit bar. */
+body:has(#submit-bar) {
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+}
