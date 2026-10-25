@@ -116,7 +116,7 @@ Locally the analytics script 404s; that's expected. It's served by Vercel in pro
 4. Deploy. Then enable **Analytics** in the project dashboard to start receiving page views and custom events.
 5. Point your domain (e.g. `spottheaibug.com`) at the project under **Settings → Domains**.
 
-Before launch: set `LAUNCH_DATE` in `lib/config.ts` to launch day, and replace `AUTHOR_NAME` / `AUTHOR_X_URL` there for the footer.
+Before launch: set `LAUNCH_DATE` in `lib/config.ts` to launch day, and optionally set `AUTHOR_NAME` / `AUTHOR_X_URL` there to show a "Made by" credit and X link in the footer (hidden while empty).
 
 ## Project structure
 

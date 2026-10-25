@@ -14,5 +14,6 @@ export const SITE_DOMAIN = "spottheaibug.com";
 export const SITE_NAME = "Spot the AI Bug";
 export const TAGLINE = "AI writes your code. Can you catch its bugs?";
 
-export const AUTHOR_NAME = "[NAME]";
-export const AUTHOR_X_URL = "https://x.com/yourhandle";
+/** Footer credit. Leave empty to hide; fill in to show "Made by …" and the X link. */
+export const AUTHOR_NAME = "";
+export const AUTHOR_X_URL = "";
