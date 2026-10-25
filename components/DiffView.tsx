@@ -22,7 +22,7 @@ export function DiffView({ rows }: { rows: DiffRowView[] }) {
               }`}
             >
               <span className="w-9 shrink-0 select-none pr-2 text-right tabular-nums text-muted/60" aria-hidden>
-                {row.kind === "add" ? row.newNo : row.oldNo}
+                {row.kind === "del" ? row.oldNo : row.newNo}
               </span>
               <span
                 className={`w-5 shrink-0 select-none text-center ${

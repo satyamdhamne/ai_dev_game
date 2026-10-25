@@ -135,7 +135,9 @@ export function ResultScreen({ daily, game, seconds, streak, ref }: Props) {
           </p>
         )}
         <h3 className="mt-4 font-mono text-xs uppercase tracking-widest text-muted">What breaks</h3>
-        <p className="mt-1.5 leading-relaxed">{puzzle.explanation}</p>
+        <p className="mt-1.5 leading-relaxed">
+          <InlineCode text={puzzle.explanation} />
+        </p>
 
         <h3 className="mt-5 mb-2 font-mono text-xs uppercase tracking-widest text-muted">The fix</h3>
         <DiffView rows={daily.diff} />
@@ -150,7 +152,7 @@ export function ResultScreen({ daily, game, seconds, streak, ref }: Props) {
         </div>
         {/* Real text, blurred: a teaser, not a secret. */}
         <p className="mt-2 select-none leading-relaxed blur-[5px]" aria-hidden>
-          {puzzle.whyAiDoesThis}
+          <InlineCode text={puzzle.whyAiDoesThis} />
         </p>
         <div className="mt-4 rounded-xl border border-border bg-surface-2 p-4">
           <p className="mb-3 text-sm">
@@ -169,5 +171,22 @@ function ResultStat({ label, value }: { label: string; value: string }) {
       <dd className="font-mono text-lg font-semibold tabular-nums">{value}</dd>
       <dt className="text-[11px] uppercase tracking-wider text-muted">{label}</dt>
     </div>
+  );
+}
+
+/** Renders `backtick` spans as inline code. */
+function InlineCode({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(/(`[^`]+`)/g).map((part, i) =>
+        part.startsWith("`") && part.endsWith("`") && part.length > 2 ? (
+          <code key={i} className="rounded bg-surface-2 px-1 py-0.5 font-mono text-[0.88em]">
+            {part.slice(1, -1)}
+          </code>
+        ) : (
+          part
+        ),
+      )}
+    </>
   );
 }

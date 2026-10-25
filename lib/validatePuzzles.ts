@@ -54,7 +54,12 @@ export function validatePuzzles(data: unknown): ValidationResult {
         const bugLine = p.bugLine;
         if (typeof p.fixedCode === "string") {
           const fixed = resolveFixedLines(lines, p.fixedCode.split("\n"), bugLine);
-          const touched = diffLines(lines, fixed).some((op) => op.kind === "del" && op.oldIndex === bugLine - 1);
+          const ops = diffLines(lines, fixed);
+          // The fix must remove/replace the bug line, or insert code directly around it.
+          const touched = ops.some((op, k) => {
+            if (op.oldIndex !== bugLine - 1) return false;
+            return op.kind === "del" || ops[k - 1]?.kind === "add" || ops[k + 1]?.kind === "add";
+          });
           if (!touched) err(`fixedCode does not change bugLine ${bugLine}; is bugLine pointing at the right line?`);
         }
       }
