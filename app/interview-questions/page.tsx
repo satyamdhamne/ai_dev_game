@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   alternates: { canonical: "/interview-questions" },
   openGraph: { title: TITLE, description: DESCRIPTION, url: "/interview-questions", type: "website" },
-  twitter: { title: TITLE, description: DESCRIPTION },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
 const CRUMBS = [
